@@ -1,4 +1,5 @@
 <?php
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,3 +19,17 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/redirect', function (Request $request) {
+    $request->session()->put('state', $state = Str::random(40));
+
+    $query = http_build_query([
+        'client_id' => '3',
+        'redirect_uri' => 'http://127.0.0.1:8000/callback',
+        'response_type' => 'code',
+        'scope' => '',
+        'state' => $state,
+    ]);
+
+    return redirect('http://127.0.0.1:8000/oauth/authorize?'.$query);
+});
